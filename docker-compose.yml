@@ -5,7 +5,6 @@ volumes:
 
 services:
   database:
-    container_name: database
     image: postgres
     restart: always
     volumes:
@@ -26,27 +25,24 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_WEBAPP_URL: https://booking.wree.space
-        NEXT_PUBLIC_API_V2_URL: http://localhost:5555/api/v2
-        NEXT_PUBLIC_LICENSE_CONSENT: agree
-        NEXT_PUBLIC_WEBSITE_TERMS_URL: https://wree.space/terms
-        NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL: https://wree.space/privacy-policy
-        CALCOM_TELEMETRY_DISABLED: 1
-        NEXTAUTH_SECRET: LJoF49wfm/UJW+H7CcPXaCLJYoAOOj9UscwBw5aDCnw=
-        CALENDSO_ENCRYPTION_KEY: 1fef676f7668265b6b28b7db6516d12c
+        NEXT_PUBLIC_WEBAPP_URL: ${NEXT_PUBLIC_WEBAPP_URL}
+        NEXT_PUBLIC_API_V2_URL: ${NEXT_PUBLIC_API_V2_URL}
+        NEXT_PUBLIC_LICENSE_CONSENT: ${NEXT_PUBLIC_LICENSE_CONSENT}
+        NEXT_PUBLIC_WEBSITE_TERMS_URL: ${NEXT_PUBLIC_WEBSITE_TERMS_URL}
+        NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL: ${NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL}
+        CALCOM_TELEMETRY_DISABLED: ${CALCOM_TELEMETRY_DISABLED}
+        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+        CALENDSO_ENCRYPTION_KEY: ${CALENDSO_ENCRYPTION_KEY}
         DATABASE_URL: ${DATABASE_URL}
         DATABASE_DIRECT_URL: ${DATABASE_URL}
     restart: always
     ports:
       - 3000:3000
-    env_file: .env
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
-      - DATABASE_DIRECT_URL=${DATABASE_URL}
     depends_on:
       - database
+    networks:
+      - dokploy-network  
 
 networks:
   dokploy-network:
-    external: true
-
+  external: true
