@@ -4,7 +4,6 @@ volumes:
   database-data:
 
 networks:
-    networks:
       - dokploy-network
     labels:
       - "traefik.enable=true"
@@ -22,7 +21,7 @@ services:
       - database-data:/var/lib/postgresql/data/
     env_file: .env
     networks:
-      - stack
+      - dokploy-network
 
   calcom:
     image: calcom.docker.scarf.sh/calcom/cal.com
