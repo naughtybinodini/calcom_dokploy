@@ -11,12 +11,6 @@ services:
       - database-data:/var/lib/postgresql/data/
     networks:
       - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.<unique-name>.rule=Host(`booking.wree.space`)"
-      - "traefik.http.routers.<unique-name>.entrypoints=websecure"
-      - "traefik.http.routers.<unique-name>.tls.certResolver=letsencrypt"
-      - "traefik.http.services.<unique-name>.loadbalancer.server.port=3000"
 
   calcom:
     image: calcom.docker.scarf.sh/calcom/cal.com
@@ -41,6 +35,13 @@ services:
       - database
     networks:
       - dokploy-network  
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.<unique-name>.rule=Host(`booking.wree.space`)"
+      - "traefik.http.routers.<unique-name>.entrypoints=websecure"
+      - "traefik.http.routers.<unique-name>.tls.certResolver=letsencrypt"
+      - "traefik.http.services.<unique-name>.loadbalancer.server.port=3000"
+      
       
 networks:
   dokploy-network:
