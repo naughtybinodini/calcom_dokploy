@@ -3,7 +3,7 @@
 volumes:
   database-data:
 
-networks:
+    networks:
       - dokploy-network
     labels:
       - "traefik.enable=true"
