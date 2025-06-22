@@ -4,9 +4,14 @@ volumes:
   database-data:
 
 networks:
-  stack:
-    name: stack
-    external: false
+    networks:
+      - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.<unique-name>.rule=Host(`booking.wree.space`)"
+      - "traefik.http.routers.<unique-name>.entrypoints=websecure"
+      - "traefik.http.routers.<unique-name>.tls.certResolver=letsencrypt"
+      - "traefik.http.services.<unique-name>.loadbalancer.server.port=3000"
 
 services:
   database:
@@ -37,7 +42,8 @@ services:
         DATABASE_DIRECT_URL: ${DATABASE_URL}
     restart: always
     networks:
-      - stack
+        dokploy-network:
+        external: true
     ports:
       - 3000:3000
     env_file: .env
@@ -47,22 +53,3 @@ services:
     depends_on:
       - database
 
-# Optional use of Prisma Studio. In production, comment out or remove the section below to prevent unwanted access to your database.
-  studio:
-    image: calcom.docker.scarf.sh/calcom/cal.com
-    restart: always
-    networks:
-      - stack
-    ports:
-      - 5555:5555
-    env_file: .env
-    environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DATABASE_HOST}/${POSTGRES_DB}
-      - DATABASE_DIRECT_URL=${DATABASE_URL}
-    depends_on:
-      - database
-    command:
-      - npx
-      - prisma
-      - studio
-# END SECTION: Optional use of Prisma Studio.
