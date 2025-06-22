@@ -47,6 +47,6 @@ services:
       - database
 
 networks:
-    dokploy-network:
+  dokploy-network:
     external: true
 
