@@ -3,15 +3,6 @@
 volumes:
   database-data:
 
-    networks:
-      - dokploy-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.<unique-name>.rule=Host(`booking.wree.space`)"
-      - "traefik.http.routers.<unique-name>.entrypoints=websecure"
-      - "traefik.http.routers.<unique-name>.tls.certResolver=letsencrypt"
-      - "traefik.http.services.<unique-name>.loadbalancer.server.port=3000"
-
 services:
   database:
     container_name: database
@@ -22,6 +13,12 @@ services:
     env_file: .env
     networks:
       - dokploy-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.<unique-name>.rule=Host(`booking.wree.space`)"
+      - "traefik.http.routers.<unique-name>.entrypoints=websecure"
+      - "traefik.http.routers.<unique-name>.tls.certResolver=letsencrypt"
+      - "traefik.http.services.<unique-name>.loadbalancer.server.port=3000"
 
   calcom:
     image: calcom.docker.scarf.sh/calcom/cal.com
@@ -29,20 +26,17 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_WEBAPP_URL: ${NEXT_PUBLIC_WEBAPP_URL}
-        NEXT_PUBLIC_API_V2_URL: ${NEXT_PUBLIC_API_V2_URL}
-        NEXT_PUBLIC_LICENSE_CONSENT: ${NEXT_PUBLIC_LICENSE_CONSENT}
-        NEXT_PUBLIC_WEBSITE_TERMS_URL: ${NEXT_PUBLIC_WEBSITE_TERMS_URL}
-        NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL: ${NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL}
-        CALCOM_TELEMETRY_DISABLED: ${CALCOM_TELEMETRY_DISABLED}
-        NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
-        CALENDSO_ENCRYPTION_KEY: ${CALENDSO_ENCRYPTION_KEY}
+        NEXT_PUBLIC_WEBAPP_URL: https://booking.wree.space
+        NEXT_PUBLIC_API_V2_URL: http://localhost:5555/api/v2
+        NEXT_PUBLIC_LICENSE_CONSENT: agree
+        NEXT_PUBLIC_WEBSITE_TERMS_URL: https://wree.space/terms
+        NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL: https://wree.space/privacy-policy
+        CALCOM_TELEMETRY_DISABLED: 1
+        NEXTAUTH_SECRET: LJoF49wfm/UJW+H7CcPXaCLJYoAOOj9UscwBw5aDCnw=
+        CALENDSO_ENCRYPTION_KEY: 1fef676f7668265b6b28b7db6516d12c
         DATABASE_URL: ${DATABASE_URL}
         DATABASE_DIRECT_URL: ${DATABASE_URL}
     restart: always
-    networks:
-        dokploy-network:
-        external: true
     ports:
       - 3000:3000
     env_file: .env
@@ -51,4 +45,8 @@ services:
       - DATABASE_DIRECT_URL=${DATABASE_URL}
     depends_on:
       - database
+
+networks:
+    dokploy-network:
+    external: true
 
